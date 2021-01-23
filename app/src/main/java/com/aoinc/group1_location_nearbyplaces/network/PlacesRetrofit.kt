@@ -7,21 +7,13 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
-import com.aoinc.group1_location_nearbyplaces.util.Constants
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
-
 class PlacesRetrofit {
-
     private var placesAPI: PlacesAPI
 
     init {
         placesAPI = createPlacesAPI(createRetrofitInstance())
-    }
 
-    private fun createPlacesAPI(retrofit: Retrofit): PlacesAPI =
-        retrofit.create(PlacesAPI::class.java)
+    }
 
     private fun createRetrofitInstance(): Retrofit {
         return Retrofit.Builder()
@@ -30,5 +22,11 @@ class PlacesRetrofit {
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .build()
     }
+
+    private fun createPlacesAPI(retrofit: Retrofit): PlacesAPI =
+        retrofit.create(PlacesAPI::class.java)
+
+    fun getNearbyPlaces(searchQuery: String): Observable<NearbySearch> =
+        placesAPI.getNearbyPlaces(searchQuery)
 
 }
