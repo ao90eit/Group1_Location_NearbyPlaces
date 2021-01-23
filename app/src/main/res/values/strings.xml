@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Group1_Location_NearbyPlaces</string>
+    <string name="open_app_settings_button">Open app settings</string>
+    <string name="location_denied_text">This app requires location permissions to function. You can update this permission in your app settings.</string>
 </resources>
