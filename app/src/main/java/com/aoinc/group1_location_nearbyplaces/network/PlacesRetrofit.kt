@@ -26,7 +26,7 @@ class PlacesRetrofit {
     private fun createPlacesAPI(retrofit: Retrofit): PlacesAPI =
         retrofit.create(PlacesAPI::class.java)
 
-    fun getNearbyPlaces(searchQuery: String): Observable<NearbySearch> =
-        placesAPI.getNearbyPlaces(searchQuery)
+    fun getNearbyPlaces(queryMap: Map<String, String>): Observable<NearbySearch> =
+        placesAPI.getNearbyPlaces(queryMap)
 
 }

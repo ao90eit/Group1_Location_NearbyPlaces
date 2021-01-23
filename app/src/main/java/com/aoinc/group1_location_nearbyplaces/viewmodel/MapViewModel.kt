@@ -8,6 +8,7 @@ import com.aoinc.group1_location_nearbyplaces.network.PlacesRetrofit
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import retrofit2.http.QueryMap
 
 class MapViewModel: ViewModel() {
 
@@ -16,9 +17,9 @@ class MapViewModel: ViewModel() {
     val placesLiveData: MutableLiveData<List<Result>> = MutableLiveData()
 
     private val placesRetrofit: PlacesRetrofit = PlacesRetrofit()
-    fun getSearchResult(searchQuery: String) {
+    fun getSearchResult(queryMap: Map<String,String>) {
         compositeDisposable.add(
-            placesRetrofit.getNearbyPlaces(searchQuery)
+            placesRetrofit.getNearbyPlaces(queryMap)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .map {
@@ -27,6 +28,7 @@ class MapViewModel: ViewModel() {
                 .subscribe({
                     if (it.isNotEmpty())
                         placesLiveData.postValue(it)
+                    Log.d("TAG_X", "${it}")
                     compositeDisposable.clear()
                 }, {
                     Log.d("TAG_X", "${it.localizedMessage}")
