@@ -1,5 +1,12 @@
 package com.aoinc.group1_location_nearbyplaces.network
 
+import com.aoinc.group1_location_nearbyplaces.model.data.NearbySearch
+import com.aoinc.group1_location_nearbyplaces.util.Constants
+import io.reactivex.Observable
+import retrofit2.Retrofit
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
+import retrofit2.converter.gson.GsonConverterFactory
+
 import com.aoinc.group1_location_nearbyplaces.util.Constants
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
