@@ -11,13 +11,18 @@ import android.view.View
 import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.FragmentContainerView
 
 class MainActivity : AppCompatActivity() {
 
     private val PERMISSION_REQUEST_CODE: Int = 1337
 
+    // connected view objects
     private lateinit var permissionDeniedOverlay: ConstraintLayout
     private lateinit var goToAppSettingsButton: Button
+
+    // dynamic fragments
+    private val mapFragment = MapFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,9 +49,15 @@ class MainActivity : AppCompatActivity() {
     private fun verifyLocationPermission() {
         if (hasLocationPermission()) {
             permissionDeniedOverlay.visibility = View.INVISIBLE
-            registerLocationManager()
+            loadMapFragment()   // only when permission granted
         } else
             requestLocationPermission()
+    }
+
+    private fun loadMapFragment() {
+        supportFragmentManager.beginTransaction()
+            .add(R.id.main_fragment_container_view, mapFragment)
+            .commit()
     }
 
     private fun requestLocationPermission() {
@@ -67,10 +78,6 @@ class MainActivity : AppCompatActivity() {
                     permissionDeniedOverlay.visibility = View.VISIBLE
             }
         }
-    }
-
-    private fun registerLocationManager() {
-        TODO("Not yet implemented")
     }
 
     private fun hasLocationPermission(): Boolean =
