@@ -1,7 +1,5 @@
 package com.aoinc.group1_location_nearbyplaces.view
 
-import android.provider.Telephony
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,14 +28,17 @@ class LocationsRVAdapter(private var locationList: List<Result>)
         val location: Result = locationList[position]
 
         holder.apply {
-            Log.d("TAG_X", location.photos[0].photoReference)
-            Glide.with(holder.itemView.context)
-                .load(location.photos[0]?.photoReference)
-                .placeholder(R.drawable.ic_baseline_photo_24)
-                .into(locationPhoto)
+
+            // photos variable may be unset if Places API did not return anything for it
+            location.photos?.let {
+                Glide.with(holder.itemView.context)
+                    .load(it[0].photoReference)
+                    .placeholder(R.drawable.ic_baseline_photo_24)
+                    .into(locationPhoto)
+            }
 
             locationName.text = location.name
-            locationRating.rating = location.userRatingsTotal.toFloat()
+            locationRating.rating = location.rating.toFloat()
         }
     }
 

@@ -30,7 +30,8 @@ class MapViewModel(): ViewModel() {
                         placesLiveData.postValue(it.results)
                         // TODO: send 'it.results' to db for offline use
 
-                        Log.d("TAG_X", "${it}")
+                        for (r in it.results)
+                            Log.d("TAG_X", r.toString())
                     } else {
                         //TODO: handle other statuses
                         Log.d("TAG_X", "${it.status}")

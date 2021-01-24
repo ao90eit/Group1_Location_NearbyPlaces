@@ -21,7 +21,7 @@ data class Result(
     @SerializedName("opening_hours")
     val openingHours: OpeningHours,
     @SerializedName("photos")
-    val photos: List<Photo>,
+    val photos: List<Photo>?,
     @PrimaryKey
     @ColumnInfo(name="place_id")
     @SerializedName("place_id")
