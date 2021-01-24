@@ -41,6 +41,7 @@ class MapFragment : Fragment(), LocationListener {
     }
 
     override fun onLocationChanged(location: Location) {
+        // TODO request new search result from viewmodel
         Log.d("LOCATION_CHECK", "My location is: ${location.latitude}, ${location.longitude}")
     }
 }

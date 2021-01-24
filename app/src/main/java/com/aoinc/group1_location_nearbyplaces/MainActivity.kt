@@ -46,6 +46,12 @@ class MainActivity : AppCompatActivity() {
         verifyLocationPermission()
     }
 
+    private fun loadMapFragment() {
+        supportFragmentManager.beginTransaction()
+            .add(R.id.main_fragment_container_view, mapFragment)
+            .commit()
+    }
+
     private fun verifyLocationPermission() {
         if (hasLocationPermission()) {
             permissionDeniedOverlay.visibility = View.INVISIBLE
@@ -54,11 +60,9 @@ class MainActivity : AppCompatActivity() {
             requestLocationPermission()
     }
 
-    private fun loadMapFragment() {
-        supportFragmentManager.beginTransaction()
-            .add(R.id.main_fragment_container_view, mapFragment)
-            .commit()
-    }
+    private fun hasLocationPermission(): Boolean =
+        ActivityCompat.checkSelfPermission(this,
+            android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
 
     private fun requestLocationPermission() {
         ActivityCompat.requestPermissions(this,
@@ -79,8 +83,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-    private fun hasLocationPermission(): Boolean =
-            ActivityCompat.checkSelfPermission(this,
-                    android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
 }
