@@ -6,14 +6,21 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.aoinc.group1_location_nearbyplaces.R
+import com.aoinc.group1_location_nearbyplaces.viewmodel.MapVMFactory
+import com.aoinc.group1_location_nearbyplaces.viewmodel.MapViewModel
 
 class MapFragment : Fragment(), LocationListener {
+
+    // get same instance of view model
+    private val viewModel: MapViewModel by viewModels(
+        factoryProducer = { MapVMFactory }
+    )
 
     private lateinit var locationManager: LocationManager
 
@@ -41,7 +48,7 @@ class MapFragment : Fragment(), LocationListener {
     }
 
     override fun onLocationChanged(location: Location) {
-        // TODO request new search result from viewmodel
-        Log.d("LOCATION_CHECK", "My location is: ${location.latitude}, ${location.longitude}")
+//        Log.d("LOCATION_CHECK", "My location is: ${location.latitude}, ${location.longitude}")
+        viewModel.updateNearbyLocations(location)
     }
 }

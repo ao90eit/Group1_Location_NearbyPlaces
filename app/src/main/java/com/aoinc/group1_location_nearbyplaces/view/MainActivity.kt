@@ -12,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import com.aoinc.group1_location_nearbyplaces.R
-import com.aoinc.group1_location_nearbyplaces.util.Constants
 import com.aoinc.group1_location_nearbyplaces.viewmodel.MapVMFactory
 import com.aoinc.group1_location_nearbyplaces.viewmodel.MapViewModel
 
@@ -40,11 +39,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // get manifest metadata
+        // get and set manifest metadata
         packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
             .apply {
                 mapsKey = metaData.getString("com.google.android.geo.API_KEY").toString()
             }
+        viewModel.mapsKey = mapsKey
 
         // initialize view object connections
         permissionDeniedOverlay = findViewById(R.id.location_denied_overlay)
@@ -57,17 +57,6 @@ class MainActivity : AppCompatActivity() {
             intent.data = uri
             startActivity(intent)
         }
-
-        // TEST QUERY
-        val queryMap: Map<String,String> = mapOf(
-            Constants.QUERY_LOCATION to "-33.852,151.211",
-            Constants.QUERY_RADIUS to "1500",
-            Constants.QUERY_KEY to mapsKey
-            // TODO: protect API Key
-        )
-
-        viewModel.getSearchResult(queryMap)
-        // END TEST QUERY
     }
 
     override fun onStart() {
