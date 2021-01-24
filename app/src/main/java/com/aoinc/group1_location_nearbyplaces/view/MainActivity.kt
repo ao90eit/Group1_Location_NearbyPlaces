@@ -7,11 +7,14 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import android.widget.Button
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.viewModels
 import com.aoinc.group1_location_nearbyplaces.R
 import com.aoinc.group1_location_nearbyplaces.util.Constants
+import com.aoinc.group1_location_nearbyplaces.viewmodel.MapVMFactory
 import com.aoinc.group1_location_nearbyplaces.viewmodel.MapViewModel
 
 class MainActivity : AppCompatActivity() {
@@ -22,8 +25,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var permissionDeniedOverlay: ConstraintLayout
     private lateinit var goToAppSettingsButton: Button
 
-    // view model
-    private val viewModel: MapViewModel = MapViewModel()
+    // get same instance of view model
+    private val viewModel: MapViewModel by viewModels(
+        factoryProducer = { MapVMFactory }
+    )
 
     // dynamic fragments
     private val mapFragment = MapFragment()
@@ -49,6 +54,7 @@ class MainActivity : AppCompatActivity() {
             Constants.QUERY_LOCATION to "-33.852,151.211",
             Constants.QUERY_RADIUS to "1500",
             Constants.QUERY_KEY to "AIzaSyCrmRUPFbpuNTXMOlvlxPDQvfFi9YzM1hc"
+            // TODO: protect API Key
         )
 
         viewModel.getSearchResult(queryMap)
