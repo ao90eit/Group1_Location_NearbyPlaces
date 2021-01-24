@@ -31,7 +31,7 @@ data class Result(
     @SerializedName("price_level")
     val priceLevel: Int,
     @SerializedName("rating")
-    val rating: Int,
+    val rating: Double,
     @SerializedName("reference")
     val reference: String,
     @SerializedName("scope")
