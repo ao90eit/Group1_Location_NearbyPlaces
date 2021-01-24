@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.activity.viewModels
@@ -16,6 +17,7 @@ import com.aoinc.group1_location_nearbyplaces.R
 import com.aoinc.group1_location_nearbyplaces.util.Constants
 import com.aoinc.group1_location_nearbyplaces.viewmodel.MapVMFactory
 import com.aoinc.group1_location_nearbyplaces.viewmodel.MapViewModel
+import com.google.android.gms.common.api.internal.ApiKey
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,12 +32,21 @@ class MainActivity : AppCompatActivity() {
         factoryProducer = { MapVMFactory }
     )
 
+    // manifest metadata
+    private lateinit var mapsKey : String
+
     // dynamic fragments
     private val mapFragment = MapFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // get manifest metadata
+        packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
+            .apply {
+                mapsKey = metaData.getString("com.google.android.geo.API_KEY").toString()
+            }
 
         // initialize view object connections
         permissionDeniedOverlay = findViewById(R.id.location_denied_overlay)
@@ -53,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         val queryMap: Map<String,String> = mapOf(
             Constants.QUERY_LOCATION to "-33.852,151.211",
             Constants.QUERY_RADIUS to "1500",
-            Constants.QUERY_KEY to "AIzaSyCrmRUPFbpuNTXMOlvlxPDQvfFi9YzM1hc"
+            Constants.QUERY_KEY to mapsKey
             // TODO: protect API Key
         )
 
