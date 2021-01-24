@@ -1,4 +1,4 @@
-package com.aoinc.group1_location_nearbyplaces
+package com.aoinc.group1_location_nearbyplaces.view
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -10,8 +10,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
+import com.aoinc.group1_location_nearbyplaces.R
 
 class MapFragment : Fragment(), LocationListener {
 
@@ -29,7 +29,7 @@ class MapFragment : Fragment(), LocationListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        locationManager = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        locationManager = view.context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000L, 20f, this)
     }
 
