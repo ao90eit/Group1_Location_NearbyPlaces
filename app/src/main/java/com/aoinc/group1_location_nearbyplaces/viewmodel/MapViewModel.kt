@@ -22,13 +22,17 @@ class MapViewModel: ViewModel() {
             placesRetrofit.getNearbyPlaces(queryMap)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .map {
-                    it.results
-                }
                 .subscribe({
-                    if (it.isNotEmpty())
-                        placesLiveData.postValue(it)
-                    Log.d("TAG_X", "${it}")
+                    if (it.status == "OK") {
+                        placesLiveData.postValue(it.results)
+                        // TODO: send 'it.results' to db for offline use
+
+                        Log.d("TAG_X", "${it}")
+                    } else {
+                        //TODO: handle other statuses
+                        Log.d("TAG_X", "${it.status}")
+                        Log.d("TAG_X", "${it.error_message}")
+                    }
                     compositeDisposable.clear()
                 }, {
                     Log.d("TAG_X", "${it.localizedMessage}")

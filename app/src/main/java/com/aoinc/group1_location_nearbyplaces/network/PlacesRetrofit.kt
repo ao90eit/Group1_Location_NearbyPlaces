@@ -1,5 +1,6 @@
 package com.aoinc.group1_location_nearbyplaces.network
 
+import android.util.Log
 import com.aoinc.group1_location_nearbyplaces.model.data.NearbySearch
 import com.aoinc.group1_location_nearbyplaces.util.Constants
 import io.reactivex.Observable
@@ -26,7 +27,7 @@ class PlacesRetrofit {
     private fun createPlacesAPI(retrofit: Retrofit): PlacesAPI =
         retrofit.create(PlacesAPI::class.java)
 
-    fun getNearbyPlaces(queryMap: Map<String, String>): Observable<NearbySearch> =
-        placesAPI.getNearbyPlaces(queryMap)
-
+    fun getNearbyPlaces(queryMap: Map<String, String>): Observable<NearbySearch> {
+        return placesAPI.getNearbyPlaces(queryMap)
+    }
 }
