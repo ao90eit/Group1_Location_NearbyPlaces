@@ -5,19 +5,16 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
-import androidx.fragment.app.viewModels
 import com.aoinc.group1_location_nearbyplaces.R
 import com.aoinc.group1_location_nearbyplaces.util.Constants
 import com.aoinc.group1_location_nearbyplaces.viewmodel.MapVMFactory
 import com.aoinc.group1_location_nearbyplaces.viewmodel.MapViewModel
-import com.google.android.gms.common.api.internal.ApiKey
 
 class MainActivity : AppCompatActivity() {
 
@@ -37,6 +34,7 @@ class MainActivity : AppCompatActivity() {
 
     // dynamic fragments
     private val mapFragment = MapFragment()
+    private val nearbyLocationsFragment = NearbyLocationsFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,9 +75,15 @@ class MainActivity : AppCompatActivity() {
         verifyLocationPermission()
     }
 
-    private fun loadMapFragment() {
+    private fun loadMainFragments() {
+        // map fragment
         supportFragmentManager.beginTransaction()
-            .add(R.id.main_fragment_container_view, mapFragment)
+            .add(R.id.map_fragment_container_view, mapFragment)
+            .commit()
+
+        // location list fragment
+        supportFragmentManager.beginTransaction()
+            .add(R.id.location_list_fragment_container_view, nearbyLocationsFragment)
             .commit()
     }
 
@@ -92,7 +96,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun onLocationPermissionGranted () {
         permissionDeniedOverlay.visibility = View.INVISIBLE
-        loadMapFragment()   // only when permission granted
+        loadMainFragments()   // only when permission granted
     }
 
     private fun hasLocationPermission(): Boolean =

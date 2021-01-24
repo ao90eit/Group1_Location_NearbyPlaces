@@ -39,7 +39,7 @@ data class Result(
     @SerializedName("types")
     val types: List<String>,
     @SerializedName("user_ratings_total")
-    val userRatingsTotal: Int,
+    val userRatingsTotal: Double,
     @SerializedName("vicinity")
     val vicinity: String
 )
