@@ -3,14 +3,16 @@ package com.aoinc.group1_location_nearbyplaces.view
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
 import com.aoinc.group1_location_nearbyplaces.R
+import com.aoinc.group1_location_nearbyplaces.util.Constants
+import com.aoinc.group1_location_nearbyplaces.viewmodel.MapViewModel
 
 class MainActivity : AppCompatActivity() {
 
@@ -19,6 +21,9 @@ class MainActivity : AppCompatActivity() {
     // connected view objects
     private lateinit var permissionDeniedOverlay: ConstraintLayout
     private lateinit var goToAppSettingsButton: Button
+
+    // view model
+    private val viewModel: MapViewModel = MapViewModel()
 
     // dynamic fragments
     private val mapFragment = MapFragment()
@@ -38,6 +43,16 @@ class MainActivity : AppCompatActivity() {
             intent.data = uri
             startActivity(intent)
         }
+
+        // TEST QUERY
+        val queryMap: Map<String,String> = mapOf(
+            Constants.QUERY_LOCATION to "-33.852,151.211",
+            Constants.QUERY_RADIUS to "1500",
+            Constants.QUERY_KEY to "AIzaSyCrmRUPFbpuNTXMOlvlxPDQvfFi9YzM1hc"
+        )
+
+        viewModel.getSearchResult(queryMap)
+        // END TEST QUERY
     }
 
     override fun onStart() {
@@ -53,10 +68,14 @@ class MainActivity : AppCompatActivity() {
 
     private fun verifyLocationPermission() {
         if (hasLocationPermission()) {
-            permissionDeniedOverlay.visibility = View.INVISIBLE
-            loadMapFragment()   // only when permission granted
+           onLocationPermissionGranted()
         } else
             requestLocationPermission()
+    }
+
+    private fun onLocationPermissionGranted () {
+        permissionDeniedOverlay.visibility = View.INVISIBLE
+        loadMapFragment()   // only when permission granted
     }
 
     private fun hasLocationPermission(): Boolean =
@@ -73,7 +92,9 @@ class MainActivity : AppCompatActivity() {
 
         //only checking for location permission, can simplify outer conditionals a little
         if (requestCode == PERMISSION_REQUEST_CODE) {
-            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                onLocationPermissionGranted()
+            } else {
 
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION))
                     requestLocationPermission()
