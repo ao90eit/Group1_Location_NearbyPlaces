@@ -21,13 +21,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/item_title_textView"
+            android:src="@drawable/ic_baseline_photo_24"
             tools:src="@tools:sample/backgrounds/scenic" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/item_title_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="24dp"
+            android:textSize="24sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_photo_imageView"
