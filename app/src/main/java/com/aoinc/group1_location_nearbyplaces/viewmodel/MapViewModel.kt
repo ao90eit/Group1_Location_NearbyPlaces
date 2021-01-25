@@ -61,4 +61,9 @@ class MapViewModel : ViewModel() {
     fun updateNetworkState(isConnected: Boolean) {
         isNetworkConnected.postValue(isConnected)
     }
+
+    fun updateLocationDataOffline(offlineList: List<NearbySearchResponse.Result>) {
+        Log.d("TAG_OFFLINE", offlineList.toString())
+        placesLiveData.postValue(offlineList)
+    }
 }

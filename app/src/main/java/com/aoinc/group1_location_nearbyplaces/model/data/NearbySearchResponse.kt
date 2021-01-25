@@ -11,9 +11,9 @@ import com.google.gson.annotations.SerializedName
 @TypeConverters(Converters::class)
 data class NearbySearchResponse(
     @SerializedName("html_attributions")
-    val placesHtmlAttributions: List<Any>,
+    val placesHtmlAttributions: List<Any>?,
     @SerializedName("next_page_token")
-    val placesNextPageToken: String,
+    val placesNextPageToken: String?,
     @SerializedName("results")
     val placesResults: List<Result>,
     @SerializedName("status")
@@ -29,12 +29,12 @@ data class NearbySearchResponse(
         @Embedded
         val placesGeometry: Geometry,
         @SerializedName("icon")
-        val placesIcon: String,
+        val placesIcon: String?,
         @SerializedName("name")
         val placesName: String,
         @SerializedName("opening_hours")
         @Embedded
-        val placesOpeningHours: OpeningHours,
+        val placesOpeningHours: OpeningHours?,
         @SerializedName("photos")
         val placesPhotos: List<Photo>?,
         @PrimaryKey
@@ -42,21 +42,21 @@ data class NearbySearchResponse(
         val placesPlaceId: String,
         @SerializedName("plus_code")
         @Embedded
-        val placesPlusCode: PlusCode,
+        val placesPlusCode: PlusCode?,
         @SerializedName("price_level")
-        val placesPriceLevel: Int,
+        val placesPriceLevel: Int?,
         @SerializedName("rating")
         val placesRating: Double,
         @SerializedName("reference")
-        val placesReference: String,
+        val placesReference: String?,
         @SerializedName("scope")
-        val placesScope: String,
+        val placesScope: String?,
         @SerializedName("types")
-        val placesTypes: List<String>,
+        val placesTypes: List<String>?,
         @SerializedName("user_ratings_total")
-        val placesUserRatingsTotal: Int,
+        val placesUserRatingsTotal: Int?,
         @SerializedName("vicinity")
-        val placesVicinity: String
+        val placesVicinity: String?
     ) {
         data class Geometry(
             @SerializedName("location")
@@ -64,7 +64,7 @@ data class NearbySearchResponse(
             val placesLocation: Location,
             @SerializedName("viewport")
             @Embedded
-            val placesViewport: Viewport
+            val placesViewport: Viewport?
         ) {
             data class Location(
                 @SerializedName("lat")
@@ -76,23 +76,23 @@ data class NearbySearchResponse(
             data class Viewport(
                 @SerializedName("northeast")
                 @Embedded
-                val placesNortheast: Northeast,
+                val placesNortheast: Northeast?,
                 @SerializedName("southwest")
                 @Embedded
-                val placesSouthwest: Southwest
+                val placesSouthwest: Southwest?
             ) {
                 data class Northeast(
                     @SerializedName("lat")
-                    val placesNELat: Double,
+                    val placesNELat: Double?,
                     @SerializedName("lng")
-                    val placesNELng: Double
+                    val placesNELng: Double?
                 )
 
                 data class Southwest(
                     @SerializedName("lat")
-                    val placesSWLat: Double,
+                    val placesSWLat: Double?,
                     @SerializedName("lng")
-                    val placesSWLng: Double
+                    val placesSWLng: Double?
                 )
             }
         }
@@ -104,13 +104,13 @@ data class NearbySearchResponse(
 
         data class Photo(
             @SerializedName("height")
-            val placesHeight: Int,
+            val placesHeight: Int?,
             @SerializedName("html_attributions")
-            val placesHtmlAttributions: List<String>,
+            val placesHtmlAttributions: List<String>?,
             @SerializedName("photo_reference")
-            val placesPhotoReference: String,
+            val placesPhotoReference: String?,
             @SerializedName("width")
-            val placesWidth: Int
+            val placesWidth: Int?
         )
 
         data class PlusCode(

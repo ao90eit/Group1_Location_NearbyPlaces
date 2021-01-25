@@ -85,6 +85,10 @@ class MainActivity : AppCompatActivity() {
                 Log.d("TAG_X", place.toString())
             }
         })
+
+        viewModel.isNetworkConnected.observe(this, {
+            if (!it) pullOfflineData()
+        })
     }
 
     override fun onStart() {
@@ -144,5 +148,10 @@ class MainActivity : AppCompatActivity() {
                     permissionDeniedOverlay.visibility = View.VISIBLE
             }
         }
+    }
+
+    fun pullOfflineData() {
+        Log.d("TAG_OFFLINE", "pulling offline data")
+        viewModel.updateLocationDataOffline(placesDatabase.getPlacesDAO().allPlaces())
     }
 }

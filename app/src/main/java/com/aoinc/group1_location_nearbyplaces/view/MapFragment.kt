@@ -69,6 +69,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
         viewModel.isNetworkConnected.observe(viewLifecycleOwner, {
             if (it) startLocationPolling() else stopLocationPolling()
+            Log.d("TAG_OFFLINE", it.toString())
             // TODO: enable/disable 'no connection' text
         })
     }
@@ -88,7 +89,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationListener {
                 }
 
                 override fun onLost(network: Network) {
-                    Log.d("TAG_NETWORK", "Network not available.")
+                    Log.d("TAG_NETWORK", "Network lost.")
                     viewModel.updateNetworkState(false)
                 }
             })
