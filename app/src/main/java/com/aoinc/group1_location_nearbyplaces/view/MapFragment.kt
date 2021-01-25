@@ -28,6 +28,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.sergivonavi.materialbanner.Banner
 
 class MapFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
@@ -44,6 +45,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationListener {
     private lateinit var connectivityManager: ConnectivityManager
     private val networkRequestBuilder: NetworkRequest.Builder = NetworkRequest.Builder()
 
+    // connectivity banner
+    private lateinit var connectivityBanner: Banner
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -53,6 +57,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        connectivityBanner = view.findViewById(R.id.banner)
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.support_map_fragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
@@ -68,9 +74,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationListener {
         })
 
         viewModel.isNetworkConnected.observe(viewLifecycleOwner, {
-            if (it) startLocationPolling() else stopLocationPolling()
+            if (it) {
+                startLocationPolling()
+                connectivityBanner.visibility = View.INVISIBLE
+            } else {
+                stopLocationPolling()
+                connectivityBanner.visibility = View.VISIBLE
+            }
             Log.d("TAG_OFFLINE", it.toString())
-            // TODO: enable/disable 'no connection' text
+
         })
     }
 
