@@ -5,7 +5,7 @@ import com.aoinc.group1_location_nearbyplaces.model.data.NearbySearchResponse
 
 @Dao
 interface PlacesDAO {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addPlace(vararg newPlace: NearbySearchResponse.Result) // var args -> '...' for any number of args
 
     @Delete
