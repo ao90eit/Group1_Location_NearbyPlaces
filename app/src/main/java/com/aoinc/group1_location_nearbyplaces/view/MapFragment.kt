@@ -33,6 +33,7 @@ class MapFragment : Fragment(), LocationListener {
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000L, 20f, this)
     }
 
+    @SuppressLint("MissingPermission")
     override fun onStop() {
         super.onStop()
 
@@ -43,5 +44,8 @@ class MapFragment : Fragment(), LocationListener {
     override fun onLocationChanged(location: Location) {
         // TODO request new search result from viewmodel
         Log.d("LOCATION_CHECK", "My location is: ${location.latitude}, ${location.longitude}")
+    }
+
+    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
     }
 }

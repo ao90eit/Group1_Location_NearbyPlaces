@@ -12,12 +12,12 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
-import androidx.fragment.app.viewModels
+import androidx.room.Room
 import com.aoinc.group1_location_nearbyplaces.R
+import com.aoinc.group1_location_nearbyplaces.model.db.PlacesDatabase
 import com.aoinc.group1_location_nearbyplaces.util.Constants
 import com.aoinc.group1_location_nearbyplaces.viewmodel.MapVMFactory
 import com.aoinc.group1_location_nearbyplaces.viewmodel.MapViewModel
-import com.google.android.gms.common.api.internal.ApiKey
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,10 +33,13 @@ class MainActivity : AppCompatActivity() {
     )
 
     // manifest metadata
-    private lateinit var mapsKey : String
+    private lateinit var mapsKey: String
 
     // dynamic fragments
     private val mapFragment = MapFragment()
+
+    //Room
+    private lateinit var placesDatabase: PlacesDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,8 +63,17 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        //initialize database
+        placesDatabase = Room.databaseBuilder(
+            this,
+            PlacesDatabase::class.java,
+            PlacesDatabase.DATABASE_NAME
+        )
+            .allowMainThreadQueries()
+            .build()
+
         // TEST QUERY
-        val queryMap: Map<String,String> = mapOf(
+        val queryMap: Map<String, String> = mapOf(
             Constants.QUERY_LOCATION to "-33.852,151.211",
             Constants.QUERY_RADIUS to "1500",
             Constants.QUERY_KEY to mapsKey
@@ -70,6 +82,13 @@ class MainActivity : AppCompatActivity() {
 
         viewModel.getSearchResult(queryMap)
         // END TEST QUERY
+
+        viewModel.placesLiveData.observe(this, {
+            for (place in it) {
+                placesDatabase.getPlacesDAO().addPlace(place)
+                Log.d("TAG_X", place.toString())
+            }
+        })
     }
 
     override fun onStart() {
@@ -85,26 +104,34 @@ class MainActivity : AppCompatActivity() {
 
     private fun verifyLocationPermission() {
         if (hasLocationPermission()) {
-           onLocationPermissionGranted()
+            onLocationPermissionGranted()
         } else
             requestLocationPermission()
     }
 
-    private fun onLocationPermissionGranted () {
+    private fun onLocationPermissionGranted() {
         permissionDeniedOverlay.visibility = View.INVISIBLE
         loadMapFragment()   // only when permission granted
     }
 
     private fun hasLocationPermission(): Boolean =
-        ActivityCompat.checkSelfPermission(this,
-            android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        ActivityCompat.checkSelfPermission(
+            this,
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
 
     private fun requestLocationPermission() {
-        ActivityCompat.requestPermissions(this,
-                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), PERMISSION_REQUEST_CODE)
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), PERMISSION_REQUEST_CODE
+        )
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         //only checking for location permission, can simplify outer conditionals a little
@@ -113,7 +140,11 @@ class MainActivity : AppCompatActivity() {
                 onLocationPermissionGranted()
             } else {
 
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION))
+                if (ActivityCompat.shouldShowRequestPermissionRationale(
+                        this,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION
+                    )
+                )
                     requestLocationPermission()
                 else
                     permissionDeniedOverlay.visibility = View.VISIBLE
