@@ -2,6 +2,7 @@ package com.aoinc.group1_location_nearbyplaces.view
 
 import android.annotation.SuppressLint
 import android.graphics.Color
+import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import com.aoinc.group1_location_nearbyplaces.R
 import com.aoinc.group1_location_nearbyplaces.model.data.NearbySearchResponse
 import com.aoinc.group1_location_nearbyplaces.view.LocationsRVAdapter.ResultsItemViewHolder
 import com.bumptech.glide.Glide
+import com.google.android.material.textview.MaterialTextView
 
 class LocationsRVAdapter(
     private var locationList: List<NearbySearchResponse.Result>,
@@ -65,7 +67,7 @@ class LocationsRVAdapter(
         }
 
         val locationPhoto: ImageView = itemView.findViewById(R.id.item_photo_imageView)
-        val locationName: TextView = itemView.findViewById(R.id.item_title_textView)
+        val locationName: MaterialTextView = itemView.findViewById(R.id.item_title_textView)
         val locationRating: RatingBar = itemView.findViewById(R.id.item_rating_bar)
 
 //        @SuppressLint("NewApi")

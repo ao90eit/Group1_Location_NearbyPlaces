@@ -1,2 +1,5 @@
+include ':materialratingbar'
+include ':materialratingbar'
+include ':materialratingbar'
 include ':app'
 rootProject.name = "Group1_Location_NearbyPlaces"

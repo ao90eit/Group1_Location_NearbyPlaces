@@ -96,5 +96,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationListener {
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+        //This is necessary (even empty) for correct functionality on older devices.
     }
 }
