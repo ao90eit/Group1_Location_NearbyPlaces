@@ -2,8 +2,6 @@ package com.aoinc.group1_location_nearbyplaces.view
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.BitmapFactory
-import android.graphics.Color
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -13,10 +11,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.viewModels
 import com.aoinc.group1_location_nearbyplaces.R
-import com.aoinc.group1_location_nearbyplaces.model.data.Result
+import com.aoinc.group1_location_nearbyplaces.model.data.NearbySearchResponse
 import com.aoinc.group1_location_nearbyplaces.viewmodel.MapVMFactory
 import com.aoinc.group1_location_nearbyplaces.viewmodel.MapViewModel
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -66,12 +63,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationListener {
         locationManager.removeUpdates(this)
     }
 
-    private fun placeNearbyMarkers(placesList: List<Result>) {
+    private fun placeNearbyMarkers(placesList: List<NearbySearchResponse.Result>) {
         for (place in placesList) {
-            val pLocation = LatLng(place.geometry.location.lat, place.geometry.location.lng)
+            val pLocation = LatLng(place.placesGeometry.placesLocation.placesLat,
+                place.placesGeometry.placesLocation.placesLng)
             mMap.addMarker(MarkerOptions()
                 .position(pLocation)
-                .title(place.name)
+                .title(place.placesName)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
             )
         }
