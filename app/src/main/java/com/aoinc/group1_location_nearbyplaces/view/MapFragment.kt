@@ -58,6 +58,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationListener {
         })
     }
 
+    @SuppressLint("MissingPermission")
     override fun onStop() {
         super.onStop()
 
@@ -94,5 +95,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationListener {
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000L, 20f, this)
+    }
+
+    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
     }
 }

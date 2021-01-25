@@ -11,17 +11,17 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.aoinc.group1_location_nearbyplaces.R
-import com.aoinc.group1_location_nearbyplaces.model.data.Result
+import com.aoinc.group1_location_nearbyplaces.model.data.NearbySearchResponse
 import com.aoinc.group1_location_nearbyplaces.view.LocationsRVAdapter.ResultsItemViewHolder
 import com.bumptech.glide.Glide
 
 class LocationsRVAdapter(
-    private var locationList: List<Result>,
+    private var locationList: List<NearbySearchResponse.Result>,
     private val locationListDelegate: LocationListDelegate
     )
     : RecyclerView.Adapter<ResultsItemViewHolder>() {
 
-    fun updateLocationList(newLocations: List<Result>) {
+    fun updateLocationList(newLocations: List<NearbySearchResponse.Result>) {
         locationList = newLocations
         notifyDataSetChanged()
     }
@@ -35,20 +35,20 @@ class LocationsRVAdapter(
             .inflate(R.layout.location_list_item, parent, false), locationListDelegate)
 
     override fun onBindViewHolder(holder: ResultsItemViewHolder, position: Int) {
-        val location: Result = locationList[position]
+        val location: NearbySearchResponse.Result = locationList[position]
 
         holder.apply {
 
             // photos variable may be unset if Places API did not return anything for it
-            location.photos?.let {
+            location.placesPhotos?.let {
                 Glide.with(holder.itemView.context)
-                    .load(it[0].photoReference)
+                    .load(it[0].placesPhotoReference)
                     .placeholder(R.drawable.ic_baseline_photo_24)
                     .into(locationPhoto)
             }
 
-            locationName.text = location.name
-            locationRating.rating = location.rating.toFloat()
+            locationName.text = location.placesName
+            locationRating.rating = location.placesRating.toFloat()
         }
     }
 

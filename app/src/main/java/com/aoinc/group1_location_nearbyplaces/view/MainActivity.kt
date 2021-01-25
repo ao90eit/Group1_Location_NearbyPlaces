@@ -5,13 +5,17 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityCompat
+import androidx.room.Room
 import com.aoinc.group1_location_nearbyplaces.R
+import com.aoinc.group1_location_nearbyplaces.model.db.PlacesDatabase
+import com.aoinc.group1_location_nearbyplaces.util.Constants
 import com.aoinc.group1_location_nearbyplaces.viewmodel.MapVMFactory
 import com.aoinc.group1_location_nearbyplaces.viewmodel.MapViewModel
 
@@ -29,11 +33,14 @@ class MainActivity : AppCompatActivity() {
     )
 
     // manifest metadata
-    private lateinit var mapsKey : String
+    private lateinit var mapsKey: String
 
     // dynamic fragments
     private val mapFragment = MapFragment()
     private val nearbyLocationsFragment = NearbyLocationsFragment()
+
+    //Room
+    private lateinit var placesDatabase: PlacesDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +64,22 @@ class MainActivity : AppCompatActivity() {
             intent.data = uri
             startActivity(intent)
         }
+
+        //initialize database
+        placesDatabase = Room.databaseBuilder(
+            this,
+            PlacesDatabase::class.java,
+            PlacesDatabase.DATABASE_NAME
+        )
+            .allowMainThreadQueries()
+            .build()
+
+        viewModel.placesLiveData.observe(this, {
+            for (place in it) {
+                placesDatabase.getPlacesDAO().addPlace(place)
+                Log.d("TAG_X", place.toString())
+            }
+        })
     }
 
     override fun onStart() {
@@ -78,12 +101,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun verifyLocationPermission() {
         if (hasLocationPermission()) {
-           onLocationPermissionGranted()
+            onLocationPermissionGranted()
         } else
             requestLocationPermission()
     }
 
-    private fun onLocationPermissionGranted () {
+    private fun onLocationPermissionGranted() {
         permissionDeniedOverlay.visibility = View.INVISIBLE
         loadMainFragments()   // only when permission granted
     }
@@ -97,7 +120,11 @@ class MainActivity : AppCompatActivity() {
                 arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), PERMISSION_REQUEST_CODE)
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         //only checking for location permission, can simplify outer conditionals a little
