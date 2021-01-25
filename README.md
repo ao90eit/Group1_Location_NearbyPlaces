@@ -6,3 +6,5 @@ Create an application that polls for the user location and lists all the nearby 
 - Should cache using Room Database for offline usage
 - Application should use material design
 - Runtime permissions
+
+![Alt text](Screenshot_1611559259.png?raw=true "Optional Title")
