@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.activity.viewModels
@@ -37,6 +36,7 @@ class MainActivity : AppCompatActivity() {
 
     // dynamic fragments
     private val mapFragment = MapFragment()
+    private val nearbyLocationsFragment = NearbyLocationsFragment()
 
     //Room
     private lateinit var placesDatabase: PlacesDatabase
@@ -45,11 +45,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // get manifest metadata
+        // get and set manifest metadata
         packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
             .apply {
                 mapsKey = metaData.getString("com.google.android.geo.API_KEY").toString()
             }
+        viewModel.mapsKey = mapsKey
 
         // initialize view object connections
         permissionDeniedOverlay = findViewById(R.id.location_denied_overlay)
@@ -72,17 +73,7 @@ class MainActivity : AppCompatActivity() {
             .allowMainThreadQueries()
             .build()
 
-        // TEST QUERY
-        val queryMap: Map<String, String> = mapOf(
-            Constants.QUERY_LOCATION to "-33.852,151.211",
-            Constants.QUERY_RADIUS to "1500",
-            Constants.QUERY_KEY to mapsKey
-            // TODO: protect API Key
-        )
-
-        viewModel.getSearchResult(queryMap)
-        // END TEST QUERY
-
+        // TODO: is this in an okay place?
         viewModel.placesLiveData.observe(this, {
             for (place in it) {
                 placesDatabase.getPlacesDAO().addPlace(place)
@@ -96,9 +87,15 @@ class MainActivity : AppCompatActivity() {
         verifyLocationPermission()
     }
 
-    private fun loadMapFragment() {
+    private fun loadMainFragments() {
+        // map fragment
         supportFragmentManager.beginTransaction()
-            .add(R.id.main_fragment_container_view, mapFragment)
+            .add(R.id.map_fragment_container_view, mapFragment)
+            .commit()
+
+        // location list fragment
+        supportFragmentManager.beginTransaction()
+            .add(R.id.location_list_fragment_container_view, nearbyLocationsFragment)
             .commit()
     }
 
@@ -111,20 +108,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun onLocationPermissionGranted() {
         permissionDeniedOverlay.visibility = View.INVISIBLE
-        loadMapFragment()   // only when permission granted
+        loadMainFragments()   // only when permission granted
     }
 
     private fun hasLocationPermission(): Boolean =
-        ActivityCompat.checkSelfPermission(
-            this,
-            android.Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
+        ActivityCompat.checkSelfPermission(this,
+            android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
 
     private fun requestLocationPermission() {
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), PERMISSION_REQUEST_CODE
-        )
+        ActivityCompat.requestPermissions(this,
+                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION), PERMISSION_REQUEST_CODE)
     }
 
     override fun onRequestPermissionsResult(
@@ -140,11 +133,7 @@ class MainActivity : AppCompatActivity() {
                 onLocationPermissionGranted()
             } else {
 
-                if (ActivityCompat.shouldShowRequestPermissionRationale(
-                        this,
-                        android.Manifest.permission.ACCESS_FINE_LOCATION
-                    )
-                )
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION))
                     requestLocationPermission()
                 else
                     permissionDeniedOverlay.visibility = View.VISIBLE
