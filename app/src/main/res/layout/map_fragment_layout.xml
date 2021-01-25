@@ -17,6 +17,9 @@
         app:messageText="You have lost connection to the Internet."
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:contentPaddingEnd="16dp"
+        app:contentPaddingStart="16dp"
+        app:buttonLeftText="Dismiss"
         android:visibility="gone"
         app:icon="@drawable/ic_baseline_signal_wifi_off_24"
         tools:ignore="MissingConstraints" />
