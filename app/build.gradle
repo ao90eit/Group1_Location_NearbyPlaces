@@ -91,4 +91,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0-alpha03'
 
     implementation project(':materialratingbar')
+    implementation "com.sergivonavi:materialbanner:1.2.0"
 }
