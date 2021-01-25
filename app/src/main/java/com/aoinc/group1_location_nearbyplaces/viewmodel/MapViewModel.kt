@@ -2,6 +2,7 @@ package com.aoinc.group1_location_nearbyplaces.viewmodel
 
 import android.location.Location
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.aoinc.group1_location_nearbyplaces.model.data.NearbySearchResponse
@@ -10,12 +11,14 @@ import com.aoinc.group1_location_nearbyplaces.util.Constants
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.atomic.AtomicBoolean
 
 class MapViewModel : ViewModel() {
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
     val placesLiveData: MutableLiveData<List<NearbySearchResponse.Result>> = MutableLiveData()
     private val placesRetrofit: PlacesRetrofit = PlacesRetrofit()
+    val isNetworkConnected: MutableLiveData<Boolean> = MutableLiveData(true)
 
     // manifest metadata
     lateinit var mapsKey : String
@@ -53,5 +56,9 @@ class MapViewModel : ViewModel() {
         )
 
         getSearchResult(queryMap)
+    }
+
+    fun updateNetworkState(isConnected: Boolean) {
+        isNetworkConnected.postValue(isConnected)
     }
 }

@@ -5,11 +5,16 @@ import android.content.Context
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkRequest
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.aoinc.group1_location_nearbyplaces.R
@@ -31,8 +36,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationListener {
         factoryProducer = { MapVMFactory }
     )
 
+    // location polling
     private lateinit var locationManager: LocationManager
     private lateinit var mMap: GoogleMap
+
+    // network connectivity
+    private lateinit var connectivityManager: ConnectivityManager
+    private val networkRequestBuilder: NetworkRequest.Builder = NetworkRequest.Builder()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,21 +55,63 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationListener {
         super.onViewCreated(view, savedInstanceState)
 
         val mapFragment = childFragmentManager.findFragmentById(R.id.support_map_fragment) as SupportMapFragment
-//        val mapFragment = activity?.supportFragmentManager?.findFragmentById(R.id.support_map_fragment) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        // get connectivity system service
+        connectivityManager = activity?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        // get location manager service
         locationManager = view.context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
         viewModel.placesLiveData.observe(viewLifecycleOwner, {
             placeNearbyMarkers(it)
         })
+
+        viewModel.isNetworkConnected.observe(viewLifecycleOwner, {
+            if (it) startLocationPolling() else stopLocationPolling()
+            // TODO: enable/disable 'no connection' text
+        })
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    // register network connectivity listener
+    override fun onResume() {
+        super.onResume()
+
+        connectivityManager.registerNetworkCallback(
+            networkRequestBuilder.build(),
+            object : ConnectivityManager.NetworkCallback() {
+
+                override fun onAvailable(network: Network) {
+                    Log.d("TAG_NETWORK", "Network available.")
+                    viewModel.updateNetworkState(true)
+                }
+
+                override fun onLost(network: Network) {
+                    Log.d("TAG_NETWORK", "Network not available.")
+                    viewModel.updateNetworkState(false)
+                }
+            })
     }
 
     @SuppressLint("MissingPermission")
-    override fun onStop() {
-        super.onStop()
+    override fun onPause() {
+        super.onPause()
+
+        // unregister network connectivity listener
+        connectivityManager.unregisterNetworkCallback(ConnectivityManager.NetworkCallback())
 
         // stop polling for location to allow garbage collection
+        stopLocationPolling()
+    }
+
+    @SuppressLint("MissingPermission")
+    // this fragment should only load if permission was given anyway
+    private fun startLocationPolling() {
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000L, 20f, this)
+    }
+
+    private fun stopLocationPolling() {
         locationManager.removeUpdates(this)
     }
 
@@ -88,13 +140,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, LocationListener {
         }
     }
 
-    @SuppressLint("MissingPermission")
-    // this should only load if permission was given anyway
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000L, 20f, this)
-    }
-
-    override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+        startLocationPolling()
     }
 }
