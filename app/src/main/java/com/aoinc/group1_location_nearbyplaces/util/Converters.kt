@@ -70,13 +70,13 @@ class Converters {
     }
 
     @TypeConverter
-    fun photosToString(photoList: List<Photo>): String {
+    fun photosToString(photoList: List<Photo>?): String {
         return gson.toJson(photoList)
     }
 
     @TypeConverter
-    fun stringToPhotos(data: String): List<Photo> {
-        val listType = object : TypeToken<List<Photo>>() {}.type
+    fun stringToPhotos(data: String): List<Photo>? {
+        val listType = object : TypeToken<List<Photo>?>() {}.type
         return gson.fromJson(data, listType)
     }
 

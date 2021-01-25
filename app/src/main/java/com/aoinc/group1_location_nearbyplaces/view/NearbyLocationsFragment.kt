@@ -11,7 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.aoinc.group1_location_nearbyplaces.R
-import com.aoinc.group1_location_nearbyplaces.model.data.Result
+import com.aoinc.group1_location_nearbyplaces.model.data.NearbySearchResponse
 import com.aoinc.group1_location_nearbyplaces.viewmodel.MapVMFactory
 import com.aoinc.group1_location_nearbyplaces.viewmodel.MapViewModel
 
@@ -26,7 +26,7 @@ class NearbyLocationsFragment : Fragment(),
     // recycler view parts
     private lateinit var locationsRecyclerView: RecyclerView
     private val locationsRecyclerAdapter = LocationsRVAdapter(listOf(), this)
-    private lateinit var thisLocationList: List<Result>
+    private lateinit var thisLocationList: List<NearbySearchResponse.Result>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -51,7 +51,7 @@ class NearbyLocationsFragment : Fragment(),
 
     override fun onListItemSelected(position: Int) {
         // TODO: move to selected location on map
-        Log.d("RV_CLICK", thisLocationList[position].placeId)
+        Log.d("RV_CLICK", thisLocationList[position].placesPlaceId)
 //        view.setBackgroundColor(Color.GREEN)
     }
 }

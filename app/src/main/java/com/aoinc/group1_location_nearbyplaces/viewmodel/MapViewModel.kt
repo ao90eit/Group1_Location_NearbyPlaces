@@ -30,12 +30,12 @@ class MapViewModel : ViewModel() {
                         placesLiveData.postValue(it.placesResults)
                         // TODO: send 'it.results' to db for offline use
 
-                        for (r in it.results)
+                        for (r in it.placesResults)
                             Log.d("TAG_X", r.toString())
                     } else {
                         //TODO: handle other statuses
-                        Log.d("TAG_X", "${it.placesStatus}")
-                        Log.d("TAG_X", "${it.placesError}")
+                        Log.d("TAG_X", it.placesStatus)
+                        Log.d("TAG_X", it.placesError)
                     }
                     compositeDisposable.clear()
                 }, {

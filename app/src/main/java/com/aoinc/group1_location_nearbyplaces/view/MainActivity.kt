@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.View
 import android.widget.Button
 import androidx.activity.viewModels
@@ -73,7 +74,6 @@ class MainActivity : AppCompatActivity() {
             .allowMainThreadQueries()
             .build()
 
-        // TODO: is this in an okay place?
         viewModel.placesLiveData.observe(this, {
             for (place in it) {
                 placesDatabase.getPlacesDAO().addPlace(place)

@@ -36,7 +36,7 @@ data class NearbySearchResponse(
         @Embedded
         val placesOpeningHours: OpeningHours,
         @SerializedName("photos")
-        val placesPhotos: List<Photo>,
+        val placesPhotos: List<Photo>?,
         @PrimaryKey
         @SerializedName("place_id")
         val placesPlaceId: String,
